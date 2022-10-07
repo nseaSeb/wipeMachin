@@ -1,0 +1,7 @@
+{
+  "name": "wipeMachin",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
