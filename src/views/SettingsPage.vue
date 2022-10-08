@@ -3,7 +3,18 @@
         <ion-header>
             <ion-toolbar>
                 <ion-title>Settings</ion-title>
-                <ion-button slot="end" @click="store.saveDataToLocalStorage()" :disabled="!isModified">Save settings</ion-button>
+                <ion-button slot="end" @click="store.fetchAccessToken()"
+                    >Force Refresh Token</ion-button
+                >
+                <ion-button
+                    slot="end"
+                    @click="
+                        store.saveDataToLocalStorage();
+                        isModified = false;
+                    "
+                    :disabled="!isModified"
+                    >Save settings</ion-button
+                >
             </ion-toolbar>
         </ion-header>
         <ion-content :fullscreen="true">
@@ -33,11 +44,33 @@
                     </ion-item>
                     <ion-item>
                         <ion-label>Client secret :</ion-label>
-                        <ion-input v-model="clientSecret" @ionChange="isModified = true"></ion-input>
+                        <ion-input
+                            v-model="clientSecret"
+                            @ionChange="isModified = true"
+                        ></ion-input>
                     </ion-item>
                     <ion-item>
                         <ion-label>Token :</ion-label>
-                        <ion-input v-model="token" @ionChange="isModified = true"></ion-input>
+                        <ion-input
+                            v-model="tokenAuth2.access_token"
+                            @ionChange="isModified = true"
+                        ></ion-input>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+                <ion-card-header>
+                    <ion-card-title color="primary">Log to public api</ion-card-title>
+                    <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item>
+                        <ion-label>URL :</ion-label>
+                        <ion-input
+                            v-model="publicPostUrl"
+                            @ionChange="isModified = true"
+                        ></ion-input>
                     </ion-item>
                 </ion-card-content>
             </ion-card>
@@ -66,7 +99,7 @@ import { onMounted, ref } from 'vue';
 import { useSettingsStore } from '../stores/settingStore';
 const store = useSettingsStore();
 let isModified = ref(false);
-const { apiHost, auth, clientID, clientSecret, token } = storeToRefs(store);
+const { apiHost, auth, clientID, clientSecret, tokenAuth2, publicPostUrl } = storeToRefs(store);
 onMounted(() => {
     console.log('onMounted settingsPage');
     store.openFromLocalStorage();

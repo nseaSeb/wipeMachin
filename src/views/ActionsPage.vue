@@ -3,8 +3,10 @@
         <ion-header>
             <ion-toolbar>
                 <ion-title>Actions</ion-title>
-                <ion-button slot="end" @click="store.fetchDatas()">Request</ion-button>
-                <ion-button color="success" slot="end">Send</ion-button>
+                <ion-buttons slot="end">
+                    <ion-button @click="store.fetchDatas()">Request</ion-button>
+                    <ion-button color="success" @click="store.sendDatas()">Send</ion-button>
+                </ion-buttons>
             </ion-toolbar>
         </ion-header>
         <ion-content :fullscreen="true">
@@ -15,49 +17,69 @@
             </ion-header>
             <ion-content :fullscreen="true">
                 <ion-list>
-                    <ItemEntry :dataSelected="contactSelected" :lenData="contacts.length" @on-check="onCheck">
+                    <ItemEntry
+                        :dataSelected="contacts.isSelected"
+                        :lenData="contacts.data.length"
+                        @on-check="store.toggleContactsChecked"
+                    >
                         <ion-item @click.stop.prevent="log('item clic')" style="width: 100%">
                             <ion-label @click.stop="log('label clic')">Contacts</ion-label>
-                            <ion-badge>{{ contacts.length }}</ion-badge>
+                            <ion-badge>{{ contacts.data.length }}</ion-badge>
                             <ion-badge color="success">0</ion-badge>
                         </ion-item>
                         <ion-item-options>
                             <ion-item-option
                                 color="danger"
                                 @click="
-                                    store.contacts = [];
+                                    contacts.data = [];
                                     store.saveDataToLocalStorage();
                                 "
                                 >Delete</ion-item-option
                             >
                         </ion-item-options>
                     </ItemEntry>
-                    <ion-item-sliding>
-                        <div class="row-with-checkbox">
-                            <div style="align-self: center">
-                                <ion-checkbox slot="start" v-model="contactSelected" @click.stop="log('check clic')"></ion-checkbox>
-                            </div>
-                            <ion-item @click.stop.prevent="log('item clic')" style="width: 100%">
-                                <ion-label @click.stop="log('label clic')">Contacts</ion-label>
-                                <ion-badge>{{ contacts.length }}</ion-badge>
-                                <ion-badge color="success">0</ion-badge>
-                            </ion-item>
-                        </div>
+                    <ItemEntry
+                        :dataSelected="individuals.isSelected"
+                        :lenData="individuals.data.length"
+                        @on-check="store.toggleIndividualsChecked()"
+                    >
+                        <ion-item @click.stop.prevent="log('item clic')" style="width: 100%">
+                            <ion-label @click.stop="log('label clic')">Individuals</ion-label>
+                            <ion-badge>{{ individuals.data.length }}</ion-badge>
+                            <ion-badge color="success">0</ion-badge>
+                        </ion-item>
                         <ion-item-options>
                             <ion-item-option
                                 color="danger"
                                 @click="
-                                    store.contacts = [];
+                                    individuals.data = [];
                                     store.saveDataToLocalStorage();
                                 "
                                 >Delete</ion-item-option
                             >
                         </ion-item-options>
-                    </ion-item-sliding>
-                    <ion-item disabled>
-                        <ion-checkbox slot="start"></ion-checkbox>
-                        <ion-label>Devis</ion-label>
-                    </ion-item>
+                    </ItemEntry>
+                    <ItemEntry
+                        :dataSelected="taxes.isSelected"
+                        :lenData="contacts.data.length"
+                        @on-check="store.toggleTaxesChecked"
+                    >
+                        <ion-item @click.stop.prevent="log('item clic')" style="width: 100%">
+                            <ion-label @click.stop="log('label clic')">Taxes</ion-label>
+                            <ion-badge>{{ taxes.data.length }}</ion-badge>
+                            <ion-badge color="success">0</ion-badge>
+                        </ion-item>
+                        <ion-item-options>
+                            <ion-item-option
+                                color="danger"
+                                @click="
+                                    taxes.data = [];
+                                    store.saveDataToLocalStorage();
+                                "
+                                >Delete</ion-item-option
+                            >
+                        </ion-item-options>
+                    </ItemEntry>
                 </ion-list>
             </ion-content>
         </ion-content>
@@ -68,10 +90,10 @@
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 import { useDataStore } from '../stores/dataStore';
+import ItemEntry from '../components/itemEntry.vue';
 import {
     IonPage,
     IonHeader,
-    IonItemSliding,
     IonList,
     IonItemOptions,
     IonItemOption,
@@ -79,22 +101,18 @@ import {
     IonTitle,
     IonContent,
     IonItem,
-    IonCheckbox,
     IonLabel,
     IonButton,
     IonBadge,
+    IonButtons,
 } from '@ionic/vue';
-import ItemEntry from '../components/itemEntry.vue';
 const store = useDataStore();
-const { contacts, contactSelected } = storeToRefs(store);
+const { contacts, individuals, taxes } = storeToRefs(store);
 onMounted(() => {
     console.log('onMounted actionsPage');
     store.openFromLocalStorage();
 });
-function onCheck(checked: boolean) {
-    console.log('onCheck', checked);
-    contactSelected.value = !contactSelected.value;
-}
+
 const log = (msg: string) => {
     console.log('event', msg);
 };

@@ -4,10 +4,10 @@ import router from './router';
 
 import { IonicVue } from '@ionic/vue';
 import { createPinia } from 'pinia';
-import './services/interceptor.js';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
+import './services/interceptor.js';
 
 /* Basic CSS for apps built with Ionic */
 import '@ionic/vue/css/normalize.css';
